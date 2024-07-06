@@ -1,0 +1,42 @@
+name: Cross-Platform Workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Steps common to all platforms
+      - name: Common Step
+        run: echo "This is a common step for all operating systems"
+
+      # OS-specific steps
+      - name: Step for Linux (in container)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v2
+      - name: Build in Container
+        if: matrix.os == 'ubuntu-latest'
+        uses: docker://ubuntu:latest
+        run: |
+          echo "OS is Linux (in container)"
+          # Place Linux-specific commands here
+
+      - name: Step for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "OS is Windows"
+          # Place Windows-specific commands here
+      
+      - name: Step for macOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          echo "OS is macOS"
+          # Place macOS-specific commands here
+                  
